@@ -19,9 +19,15 @@ namespace TodoApp
 
         private void textBox1_KeyDown(object sender, KeyEventArgs e)
         {
+            
             if (e.KeyCode == Keys.Enter)
             {
-                MessageBox.Show("Pressed Enter: " + textBox1.Text);
+                if (todoTextField.Text == "")
+                {
+                    MessageBox.Show("テキストフィールドが空です");
+                    return;
+                }
+                todoList.Items.Add(todoTextField.Text);
             }
         }
     }
