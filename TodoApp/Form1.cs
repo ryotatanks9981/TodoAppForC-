@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO;
 
 namespace TodoApp
 {
@@ -15,6 +16,15 @@ namespace TodoApp
         public Form1()
         {
             InitializeComponent();
+            using (StreamReader reader = new StreamReader("todos.text", Encoding.GetEncoding(932)))
+            {
+                String file = reader.ReadToEnd();
+                string[] todos = file.Split('\n');
+                foreach (string todo in todos)
+                {
+                    todoList.Items.Add(todo);
+                }
+            }
         }
 
         private void textBox1_KeyDown(object sender, KeyEventArgs e)
@@ -27,8 +37,35 @@ namespace TodoApp
                     MessageBox.Show("テキストフィールドが空です");
                     return;
                 }
-                todoList.Items.Add(todoTextField.Text);
+                todoList.Items.Add(getTodo());
+                writeTodos();
+                todoTextField.Text = "";
             }
+        }
+
+
+        private void writeTodos()
+        {
+            using (StreamWriter writer = new StreamWriter("todos.text", true, Encoding.GetEncoding(932)))
+            {
+                try
+                {
+                    writer.WriteLine(getTodo());
+                } catch
+                {
+                    MessageBox.Show("保存できませんでした。");
+                }
+                
+            }
+        }
+
+        private string getTodo()
+        {
+            if (todoTextField.Text == "")
+            {
+                throw new FormatException();
+            }
+            return todoTextField.Text;
         }
     }
 }
